@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Track Certificate Requests</title>
+   
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/StartBootstrap/startbootstrap-sb-admin-2/css/sb-admin-2.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-brown: #8B6B5E; 
+            --secondary-brown: #A88B7F;  
+            --accent-gold: #B8860B;
+            --light-cream: #F5F0EB;
+            --dark-cream: #EAE2DB;
+            --text-dark: #3E2723;
+            --text-light: #795548;
+            --white: #fff;
+        }
+
+        .sidebar {
+            background: var(--primary-brown) !important;
+        }
+
+        .sidebar .nav-item .nav-link {
+            color: var(--light-cream) !important;
+            padding: 1rem 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .sidebar .nav-item .nav-link:hover {
+            background: var(--secondary-brown);
+            color: var(--white) !important;
+        }
+
+        .sidebar .nav-item.active .nav-link {
+            background: var(--accent-gold);
+            color: var(--white) !important;
+        }
+
+        .sidebar-brand {
+            padding: 1.5rem 1rem;
+            background: rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .sidebar-brand img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid var(--accent-gold);
+            padding: 2px;
+            transition: transform 0.3s ease-in-out;
+            flex-shrink: 0;
+        }
+
+        .sidebar-brand-text {
+            color: var(--white);
+            font-family: 'Playfair Display', serif;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.2;
+            flex-grow: 1;
+        }
+
+        .sidebar-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin: 1rem 0;
+        }
+
+        .sidebar .nav-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .sidebar .nav-item .nav-link {
+            padding: 0.75rem 1.5rem;
+        }
+
+        .sidebar-brand .brand-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .btn-logout {
+            color: var(--light-cream);
+            background: transparent;
+            border: 1px solid var(--light-cream);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s;
+            margin: 1rem;
+            width: calc(100% - 2rem);
+        }
+
+        .btn-logout:hover {
+            background: var(--accent-gold);
+            color: var(--white);
+            border-color: var(--accent-gold);
+        }
+
+        .topbar {
+            background: var(--white) !important;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+
+        .card-header {
+            background: var(--primary-brown) !important;
+            color: var(--white) !important;
+        }
+
+        .badge-success {
+            background: var(--accent-gold) !important;
+        }
+
+        .badge-info {
+            background: var(--secondary-brown) !important;
+        }
+
+        .badge-warning {
+            background: var(--primary-brown) !important;
+        }
+
+        .badge-primary {
+            background: var(--accent-gold) !important;
+        }
+
+        .btn-primary {
+            background: var(--accent-gold) !important;
+            border-color: var(--accent-gold) !important;
+        }
+
+        .btn-primary:hover {
+            background: #DAA520 !important;
+            border-color: #DAA520 !important;
+        }
+
+        /* Loading Styles */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--light-cream);
+            border-top: 5px solid var(--accent-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            color: var(--white);
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .btn-logout {
+            position: relative;
+        }
+
+        .btn-logout.loading {
+            color: transparent;
+            pointer-events: none;
+        }
+
+        .btn-logout.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin: -10px 0 0 -10px;
+            border: 3px solid var(--light-cream);
+            border-top: 3px solid var(--primary-brown);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Modal Styles */
+        .modal-header.bg-primary {
+            background: var(--primary-brown) !important;
+        }
+
+        .modal-header .close {
+            color: var(--light-cream) !important;
+        }
+
+        .modal-header .modal-title {
+            color: var(--white) !important;
+        }
+
+        .btn-success {
+            background: var(--primary-brown) !important;
+            border-color: var(--primary-brown) !important;
+        }
+
+        .btn-success:hover {
+            background: var(--secondary-brown) !important;
+            border-color: var(--secondary-brown) !important;
+        }
+    </style>
+</head>
+<body id="page-top">
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <a class="sidebar-brand d-flex align-items-center" href="#">
+            <img src="images/church_logo.jpg" alt="Our Lady of Light Parish Logo">
+            <div class="brand-content">
+                <div class="sidebar-brand-text">OUR LADY OF LIGHT PARISH</div>
+                <div class="sidebar-brand-text small">LOON, BOHOL</div>
+            </div>
+        </a>
+
+        <hr class="sidebar-divider">
+
+        <li class="nav-item">
+            <a class="nav-link" href="tracking.html">
+                <i class="fas fa-fw fa-file-alt"></i>
+                <span>Certificate Requests</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="approved_certificates.html">
+                <i class="fas fa-fw fa-check"></i>
+                <span>Approved Certificates</span>
+            </a>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="#">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Track Request</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="fas fa-fw fa-cogs"></i>
+                <span>Settings</span>
+            </a>
+        </li>
+
+        <hr class="sidebar-divider">
+        <div class="text-center">
+            <a href="logout.php" class="btn btn-logout" id="logoutButton">
+                <i class="fas fa-sign-out-alt fa-fw"></i>
+                Logout
+            </a>
+        </div>
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+
+            <!-- Topbar -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                <h5 class="ml-3 font-weight-bold text-primary">Track Certificate Requests</h5>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item dropdown no-arrow">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown">
+                            <span class="mr-2 font-weight-bold text-gray-800">Admin</span>
+                            <i class="fas fa-user fa-fw"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Main Content -->
+            <div class="container-fluid">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3 bg-primary text-white">
+                        <h6 class="m-0 font-weight-bold">Certificate Status</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered text-center">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>Request ID</th>
+                                        <th>Child's Name</th>
+                                        <th>Requested By</th>
+                                        <th>Date Approved</th>
+                                        <th>Request Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Ana Reyes</td>
+                                        <td>Carlos Reyes</td>
+                                        <td>2025-06-02</td>
+                                        <td>
+                                            <span class="badge badge-success"><i class="fas fa-check-circle"></i> Received</span>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-primary" onclick="openStatusUpdateModal(this)"
+                                                    data-id="2"
+                                                    data-current-status="Received">
+                                                <i class="fas fa-edit"></i> Update Status
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>4</td>
+                                        <td>Lea Salonga</td>
+                                        <td>Emma Salonga</td>
+                                        <td>2025-06-06</td>
+                                        <td>
+                                            <span class="badge badge-info"><i class="fas fa-box-open"></i> Request Processed</span>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-primary" onclick="openStatusUpdateModal(this)"
+                                                    data-id="4"
+                                                    data-current-status="Request Processed">
+                                                <i class="fas fa-edit"></i> Update Status
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>6</td>
+                                        <td>Cindy Cruz</td>
+                                        <td>Mario Cruz</td>
+                                        <td>2025-06-08</td>
+                                        <td>
+                                            <span class="badge badge-info"><i class="fas fa-truck"></i> Delivered</span>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-primary" onclick="openStatusUpdateModal(this)"
+                                                    data-id="6"
+                                                    data-current-status="Delivered">
+                                                <i class="fas fa-edit"></i> Update Status
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>8</td>
+                                        <td>Brian Mendoza</td>
+                                        <td>Rosie Mendoza</td>
+                                        <td>2025-06-10</td>
+                                        <td>
+                                            <span class="badge badge-warning"><i class="fas fa-cog fa-spin"></i> Processing</span>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-primary" onclick="openStatusUpdateModal(this)"
+                                                    data-id="8"
+                                                    data-current-status="Processing">
+                                                <i class="fas fa-edit"></i> Update Status
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>9</td>
+                                        <td>Marco Villanueva</td>
+                                        <td>Isabel Villanueva</td>
+                                        <td>2025-06-11</td>
+                                        <td>
+                                            <span class="badge badge-primary"><i class="fas fa-box"></i> Ready for Pickup</span>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-primary" onclick="openStatusUpdateModal(this)"
+                                                    data-id="9"
+                                                    data-current-status="Ready for Pickup">
+                                                <i class="fas fa-edit"></i> Update Status
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>11</td>
+                                        <td>Julius Dizon</td>
+                                        <td>Rosa Dizon</td>
+                                        <td>2025-06-13</td>
+                                        <td>
+                                            <span class="badge badge-info"><i class="fas fa-box-open"></i> Request Processed</span>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-primary" onclick="openStatusUpdateModal(this)"
+                                                    data-id="11"
+                                                    data-current-status="Request Processed">
+                                                <i class="fas fa-edit"></i> Update Status
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>13</td>
+                                        <td>Rafael Gomez</td>
+                                        <td>Alicia Gomez</td>
+                                        <td>2025-06-15</td>
+                                        <td>
+                                            <span class="badge badge-info"><i class="fas fa-truck"></i> Delivered</span>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-primary" onclick="openStatusUpdateModal(this)"
+                                                    data-id="13"
+                                                    data-current-status="Delivered">
+                                                <i class="fas fa-edit"></i> Update Status
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>15</td>
+                                        <td>Diego Ramos</td>
+                                        <td>Nina Ramos</td>
+                                        <td>2025-06-17</td>
+                                        <td>
+                                            <span class="badge badge-warning"><i class="fas fa-cog fa-spin"></i> Processing</span>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-primary" onclick="openStatusUpdateModal(this)"
+                                                    data-id="15"
+                                                    data-current-status="Processing">
+                                                <i class="fas fa-edit"></i> Update Status
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Main Content -->
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="sticky-footer bg-white">
+            <div class="container my-auto text-center">
+                <span class="text-muted">© 2025 Baptism Certificate System</span>
+            </div>
+        </footer>
+
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="text-center">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Logging out...</div>
+    </div>
+</div>
+
+<!-- JS Files -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/StartBootstrap/startbootstrap-sb-admin-2/js/sb-admin-2.min.js"></script>
+
+<!-- Status Update Modal -->
+<div class="modal fade" id="statusUpdateModal" tabindex="-1" role="dialog" aria-labelledby="statusUpdateModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="statusUpdateModalLabel">Update Request Status</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="statusUpdateForm">
+                    <input type="hidden" id="requestId" name="requestId">
+                    <div class="form-group">
+                        <label for="statusSelect">Select New Status</label>
+                        <select class="form-control" id="statusSelect" name="status" required>
+                            <option value="">Choose a status...</option>
+                            <option value="Processing">Processing</option>
+                            <option value="Request Processed">Request Processed</option>
+                            <option value="Ready for Pickup">Ready for Pickup</option>
+                            <option value="Received">Received</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="updateRequestStatus()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentStatusButton = null;
+
+function openStatusUpdateModal(button) {
+    currentStatusButton = button;
+    const requestId = button.getAttribute('data-id');
+    const currentStatus = button.getAttribute('data-current-status');
+    
+    // Set the request ID in the modal
+    document.getElementById('requestId').value = requestId;
+    
+    // Set the current status in the dropdown
+    const statusSelect = document.getElementById('statusSelect');
+    statusSelect.value = currentStatus;
+    
+    // Show the modal
+    $('#statusUpdateModal').modal('show');
+}
+
+function updateRequestStatus() {
+    if (!currentStatusButton) return;
+    
+    const statusSelect = document.getElementById('statusSelect');
+    const newStatus = statusSelect.value;
+    
+    if (!newStatus) {
+        alert('Please select a status');
+        return;
+    }
+    
+    // Get the status cell in the same row as the button
+    const row = currentStatusButton.closest('tr');
+    const statusCell = row.querySelector('td:nth-child(5)');
+    
+    // Determine badge class based on status
+    let badgeClass = 'badge-warning'; // default for Processing
+    if (newStatus === 'Received') {
+        badgeClass = 'badge-success';
+    } else if (newStatus === 'Request Processed') {
+        badgeClass = 'badge-info';
+    } else if (newStatus === 'Ready for Pickup') {
+        badgeClass = 'badge-primary';
+    }
+    
+    // Update the status display
+    statusCell.innerHTML = `<span class="badge ${badgeClass}">
+        <i class="fas ${getStatusIcon(newStatus)}"></i> ${newStatus}
+    </span>`;
+    
+    // Update the button's data attribute
+    currentStatusButton.setAttribute('data-current-status', newStatus);
+    
+    // Close the modal
+    $('#statusUpdateModal').modal('hide');
+}
+
+function getStatusIcon(status) {
+    switch(status) {
+        case 'Request Processed':
+            return 'fa-box-open';
+        case 'Processing':
+            return 'fa-cog fa-spin';
+        case 'Ready for Pickup':
+            return 'fa-box';
+        case 'Delivered':
+            return 'fa-truck';
+        case 'Received':
+            return 'fa-check-circle';
+        default:
+            return 'fa-info-circle';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const logoutButton = document.getElementById('logoutButton');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+
+    logoutButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // Show loading state
+        logoutButton.classList.add('loading');
+        loadingOverlay.style.display = 'flex';
+        
+        // Redirect after a short delay
+        setTimeout(() => {
+            window.location.href = 'logout.php';
+        }, 1000);
+    });
+});
+</script>
+</body>
+</html>

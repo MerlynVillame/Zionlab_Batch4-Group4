@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+    <link href="css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Add Google Fonts for modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+    body {
+        background: #F2F4F4; /* off-white */
+        font-family: 'Roboto', Arial, sans-serif;
+        color: #6B3F00; /* dark brown for text */
+    }
+    .sb-topnav.navbar {
+        background: #6B3F00 !important;
+        color: #B08804 !important;
+        box-shadow: 0 2px 8px rgba(107,63,0,0.10);
+    }
+    .sb-topnav .navbar-brand {
+        color: #B08804 !important;
+        font-family: 'Montserrat', Arial, sans-serif;
+        font-weight: 700;
+        letter-spacing: 1px;
+        font-size: 1.3rem;
+    }
+    .sb-topnav .navbar-brand:hover {
+        color: #C9A227 !important;
+    }
+    .sb-sidenav {
+        background: linear-gradient(180deg, #B88A0A 0%, #966504 100%); /* palette gold to medium brown gradient */
+        color: #F2F4F4;
+        font-family: 'Montserrat', Arial, sans-serif;
+        box-shadow: 2px 0 16px rgba(107,63,0,0.06);
+        border-top-right-radius: 24px;
+        border-bottom-right-radius: 24px;
+        min-height: 100vh;
+        animation: fadeInSidebar 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow-y: unset;
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+        border-right: 2px solid #B88A0A;
+    }
+   
+    @keyframes fadeInSidebar {
+        from { opacity: 0; transform: translateX(-40px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+    .sb-sidenav .church-logo-bg {
+        background: transparent;
+        position: relative;
+        width: 100%;
+        height: auto;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        margin-bottom: 0;
+        overflow: visible;
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+    .sb-sidenav .church-logo {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 16px;
+        margin: 0 18px;
+        width: calc(100% - 36px);
+        padding-top: 0 !important;
+        padding-bottom: 10px;
+        margin-top: 20px !important;
+    }
+    .sb-sidenav .church-logo img {
+        width: 70px;
+        height: 70px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 3px solid #A9D8DE;
+        background: #fff;
+        box-shadow: 0 2px 8px rgba(107,63,0,0.10);
+        margin-bottom: 0;
+        margin-left: 0;
+    }
+    .sb-sidenav .church-logo img:hover {
+        box-shadow: 0 8px 32px rgba(185,136,4,0.18);
+        border-color: #C9A227;
+    }
+    .sb-sidenav .church-logo .church-name {
+        margin-top: 0;
+        text-align: center;
+        font-size: 11px;
+    }
+    .sb-sidenav-menu .nav {
+        margin-top: 18px;
+    }
+    .sb-sidenav .sb-sidenav-menu .nav-link {
+        color: #6B3F00;
+        background: transparent;
+        border-radius: 10px;
+        margin: 4px 0;
+        padding: 10px 16px;
+        font-size: 0.90rem;
+        font-weight: 700;
+        transition: background 0.2s, color 0.2s, box-shadow 0.2s, border 0.2s;
+        border-left: 4px solid transparent;
+    }
+    .sb-sidenav .sb-sidenav-menu .nav-link.active {
+        background: linear-gradient(90deg, #A9D8DE 0%, #B88A0A 100%);
+        color: #6B3F00;
+        border-left: 4px solid #966504;
+        box-shadow: 0 2px 8px rgba(185,136,4,0.08);
+    }
+    .sb-sidenav .sb-sidenav-menu .nav-link:hover {
+        background: #F2F4F4;
+        color: #B88A0A;
+        border-left: 4px solid #A9D8DE;
+        box-shadow: 0 2px 8px rgba(169,216,222,0.10);
+    }
+    .sb-sidenav-menu hr {
+        border: none;
+        border-top: 1.5px solid #ede9dc;
+        margin: 18px 18px 10px 18px;
+    }
+    .card-header {
+        background: #B88A0A;
+        color: #fff;
+        font-family: 'Montserrat', Arial, sans-serif;
+        font-size: 1.2rem;
+        letter-spacing: 1px;
+        border-radius: 8px 8px 0 0;
+        border-bottom: 2px solid #C9A227;
+        box-shadow: 0 2px 8px rgba(185,136,4,0.18);
+    }
+    .card {
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(107,63,0,0.16);
+        border: none;
+        background: #fff;
+        transition: box-shadow 0.3s, transform 0.3s;
+    }
+    .card:hover {
+        box-shadow: 0 16px 48px rgba(107,63,0,0.22);
+        transform: translateY(-2px) scale(1.01);
+    }
+    #datatablesSimple {
+        background: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        font-family: 'Roboto', Arial, sans-serif;
+        box-shadow: 0 2px 12px rgba(107,63,0,0.06);
+        font-size: 0.70rem;
+    }
+    #datatablesSimple th {
+        background: #966504;
+        color: #fff;
+        font-family: 'Montserrat', Arial, sans-serif;
+        font-size: 0.72rem;
+        letter-spacing: 1px;
+        border-bottom: 2px solid #C9A227;
+        padding: 6px 4px;
+    }
+    #datatablesSimple td {
+        color: #6B3F00;
+        font-size: 0.68rem;
+        vertical-align: middle;
+        padding: 5px 4px;
+    }
+    #datatablesSimple tr:nth-child(even) td {
+        background: #F2F4F4;
+    }
+    #datatablesSimple tr:nth-child(odd) td {
+        background: #fff;
+    }
+    .btn-success.approve-btn {
+        background: linear-gradient(90deg, #B08804 0%, #8C6502 100%);
+        border: none;
+        color: #fff;
+        font-weight: 600;
+        border-radius: 6px;
+        transition: background 0.3s, color 0.3s;
+        box-shadow: 0 2px 8px rgba(185,136,4,0.08);
+    }
+    .btn-success.approve-btn:hover {
+        background: #C9A227;
+        color: #2D1B00;
+    }
+    .modal.fade .modal-dialog {
+        display: flex;
+        align-items: center;
+        min-height: 100vh;
+        justify-content: center;
+    }
+    .modal-content {
+        background: #fff;
+        border-radius: 16px;
+        border: 2px solid #C9A227;
+    }
+    .modal-header {
+        background: #B88A0A;
+        color: #fff;
+        border-radius: 16px 16px 0 0;
+        border-bottom: none;
+    }
+    .modal-title {
+        color: #fff;
+        font-family: 'Montserrat', Arial, sans-serif;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+    .modal-body p {
+        color: #2D1B00;
+        font-size: 1.1rem;
+        font-family: 'Roboto', Arial, sans-serif;
+    }
+    .btn-approve {
+        background: #966504;
+        color: #fff;
+        font-weight: 700;
+        border-radius: 6px;
+        border: none;
+        padding: 8px 22px;
+        transition: background 0.2s, color 0.2s;
+    }
+    .btn-approve:hover, .btn-approve:focus {
+        background: #B88A0A;
+        color: #fff;
+    }
+    .btn-reject {
+        background: #A9D8DE;
+        color: #6B3F00;
+        font-weight: 700;
+        border-radius: 6px;
+        border: none;
+        padding: 8px 22px;
+        transition: background 0.2s, color 0.2s;
+    }
+    .btn-reject:hover, .btn-reject:focus {
+        background: #6B3F00;
+        color: #fff;
+    }
+    footer.bg-light {
+        background: #E5E7E9 !important;
+        color: #6B3F00;
+    }
+    .text-muted {
+        color: #8C6502 !important;
+    }
+    a {
+        color: #8C6502;
+        transition: color 0.2s;
+    }
+    a:hover {
+        color: #C9A227;
+    }
+    .btn-logout {
+        background: #6B3F00;
+        color: #fff;
+        font-family: 'Montserrat', Arial, sans-serif;
+        font-weight: 700;
+        border-radius: 8px;
+        letter-spacing: 1px;
+        padding: 10px 0;
+        margin-top: 0;
+        border: none;
+        box-shadow: 0 2px 8px rgba(107,63,0,0.08);
+        transition: background 0.2s, color 0.2s;
+        font-size: 1rem;
+        display: block;
+        text-decoration: none;
+    }
+    .btn-logout:hover, .btn-logout:focus {
+        background: #B88A0A;
+        color: #6B3F00;
+        text-decoration: none;
+    }
+    h2 {
+        background: #966504 !important;
+        color: #fff !important;
+        font-size: 1.05rem !important;
+        padding: 8px 14px !important;
+    }
+    .container-fluid.px-4 {
+        padding-top: 8px !important;
+        margin-top: 0 !important;
+    }
+    #layoutSidenav_content, #layoutSidenav_content main, .container-fluid.px-4 {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+    .sb-sidenav, .sb-sidenav * {
+        font-family: 'Montserrat', Arial, sans-serif !important;
+    }
+    </style>
+</head>
+<body class="sb-nav-fixed">
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                <div class="church-logo-bg">
+                    <div class="church-logo">
+                        <img src="logo.png" alt="Our Lady of Light Parish Logo">
+                        <div class="church-name">Our Lady of Light <br>Parish- Loon</div>
+                    </div>
+                </div>
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <hr style="border: none; border-top: 1.5px solid #ede9dc; margin: 18px 18px 10px 18px;">
+                        <a class="nav-link active" href="certificates_request.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
+                            Certificates Request
+                        </a>
+                      
+                        <a class="nav-link" href="records.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-book"></i></div>
+                            Baptismal Records
+                        </a>
+                    </div>
+                </div>
+                <!-- Separator and Logout Button -->
+                <div style="flex-grow:1;"></div>
+                <hr style="border: none; border-top: 1.5px solid #423405; margin: 18px 18px 10px 18px;">
+                <div style="padding: 0 18px 18px 18px; text-align: center;">
+                    <a href="#" class="btn btn-logout" style="width: 100%;">Logout</a>
+                </div>
+            </nav>
+        </div>
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4" style="padding-top: 0 !important; margin-top: 0 !important;">
+                    <h2 style="font-family: 'Montserrat', Arial, sans-serif; color: #fff; background: #966504; font-weight: 700;margin-top: 0; margin-bottom: 18px; padding: 10px 18px; border-radius: 8px 8px 0 0; text-align: left; letter-spacing: 1px;">Certificates Request</h2>
+                    <div class="card mb-4">
+                        <div style="height: 4px; background: #A9D8DE; border-radius: 8px 8px 0 0; margin-bottom: 0;"></div>
+                        <div class="card-body">
+                            <table id="datatablesSimple">
+                                <thead>
+                                    <tr>
+                                        <th>Flag</th>
+                                        <th>Request ID</th>
+                                        <th>Child's Name</th>
+                                        <th>Requested By</th>
+                                        <th>Status</th>
+                                        <th>Date Required</th>
+                                        <th>Date Requested</th>
+                                        <th>Date Approved</th>
+                                        <th>Generated By</th>
+                                        <th>Approved/Rejected By</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><i class="fa-solid fa-flag" style="color: #00b300;"></i></td>
+                                        <td>REQ-001</td>
+                                        <td>John Doe</td>
+                                        <td>Mary Smith</td>
+                                        <td>Pending</td>
+                                        <td>2024-06-10</td>
+                                        <td>2024-06-01</td>
+                                        <td>2024-06-11</td>
+                                        <td>Church Staff</td>
+                                        <td>Church Staff</td>
+                                        <td><button class="btn btn-success btn-sm approve-btn" data-request="REQ-001">Approve</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="fa-solid fa-flag" style="color: #00b300;"></i></td>
+                                        <td>REQ-002</td>
+                                        <td>Jane Smith</td>
+                                        <td>Paul Brown</td>
+                                        <td>Approved</td>
+                                        <td>2024-06-12</td>
+                                        <td>2024-06-02</td>
+                                        <td>2024-06-03</td>
+                                        <td>Church Staff</td>
+                                        <td>Church Staff</td>
+                                        <td><button class="btn btn-success btn-sm approve-btn" data-request="REQ-002">Approve</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="fa-solid fa-flag" style="color: #00b300;"></i></td>
+                                        <td>REQ-003</td>
+                                        <td>Michael Lee</td>
+                                        <td>Sarah White</td>
+                                        <td>Rejected</td>
+                                        <td>2024-06-15</td>
+                                        <td>2024-06-03</td>
+                                        <td>2024-06-04</td>
+                                        <td>Church Staff</td>
+                                        <td>Church Staff</td>
+                                        <td><button class="btn btn-success btn-sm approve-btn" data-request="REQ-003">Approve</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="fa-solid fa-flag" style="color: #00b300;"></i></td>
+                                        <td>REQ-004</td>
+                                        <td>Emily Clark</td>
+                                        <td>David Green</td>
+                                        <td>Pending</td>
+                                        <td>2024-06-18</td>
+                                        <td>2024-06-04</td>
+                                        <td>2024-06-04</td>
+                                        <td>Church Staff</td>
+                                        <td>Church Staff</td>
+                                        <td><button class="btn btn-success btn-sm approve-btn" data-request="REQ-004">Approve</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="fa-solid fa-flag" style="color: #00b300;"></i></td>
+                                        <td>REQ-005</td>
+                                        <td>Olivia Brown</td>
+                                        <td>James Black</td>
+                                        <td>Pending</td>
+                                        <td>2024-06-20</td>
+                                        <td>2024-06-05</td>
+                                        <td>2024-06-04</td>
+                                        <td>Church Staff</td>
+                                        <td>Church Staff</td>
+                                        <td><button class="btn btn-success btn-sm approve-btn" data-request="REQ-005">Approve</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="fa-solid fa-flag" style="color: #00b300;"></i></td>
+                                        <td>REQ-006</td>
+                                        <td>Lucas White</td>
+                                        <td>Emma Blue</td>
+                                        <td>Pending</td>
+                                        <td>2024-06-22</td>
+                                        <td>2024-06-06</td>
+                                        <td>2024-06-04</td>
+                                        <td>Church Staff</td>
+                                        <td>Church Staff</td>
+                                        <td><button class="btn btn-success btn-sm approve-btn" data-request="REQ-006">Approve</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="fa-solid fa-flag" style="color: #00b300;"></i></td>
+                                        <td>REQ-007</td>
+                                        <td>Sophia King</td>
+                                        <td>Chris Red</td>
+                                        <td>Pending</td>
+                                        <td>2024-06-25</td>
+                                        <td>2024-06-07</td>
+                                        <td>2024-06-04</td>
+                                        <td>Church Staff</td>
+                                        <td>Church Staff</td>
+                                        <td><button class="btn btn-success btn-sm approve-btn" data-request="REQ-007">Approve</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="fa-solid fa-flag" style="color: #00b300;"></i></td>
+                                        <td>REQ-008</td>
+                                        <td>William Black</td>
+                                        <td>Linda Pink</td>
+                                        <td>Pending</td>
+                                        <td>2024-06-28</td>
+                                        <td>2024-06-08</td>
+                                        <td>2024-06-04</td>
+                                        <td>Church Staff</td>
+                                        <td>Church Staff</td>
+                                        <td><button class="btn btn-success btn-sm approve-btn" data-request="REQ-008">Approve</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="fa-solid fa-flag" style="color: #00b300;"></i></td>
+                                        <td>REQ-009</td>
+                                        <td>Charlotte Grey</td>
+                                        <td>Brian Orange</td>
+                                        <td>Pending</td>
+                                        <td>2024-06-30</td>
+                                        <td>2024-06-09</td>
+                                        <td>2024-06-04</td>
+                                        <td>Church Staff</td>
+                                        <td>Church Staff</td>
+                                        <td><button class="btn btn-success btn-sm approve-btn" data-request="REQ-009">Approve</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="fa-solid fa-flag" style="color: #00b300;"></i></td>
+                                        <td>REQ-010</td>
+                                        <td>Amelia Violet</td>
+                                        <td>George Yellow</td>
+                                        <td>Pending</td>
+                                        <td>2024-07-02</td>
+                                        <td>2024-06-10</td>
+                                        <td>2024-06-04</td>
+                                        <td>Church Staff</td>
+                                        <td>Church Staff</td>
+                                        <td><button class="btn btn-success btn-sm approve-btn" data-request="REQ-010">Approve</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <footer class="py-4 bg-light mt-auto">
+                <div class="container-fluid px-4">
+                    <div class="d-flex align-items-center justify-content-between small">
+                        <div class="text-muted">Copyright &copy; Your Website 2025</div>
+                        <div>
+                            <a href="#">Privacy Policy</a>
+                            &middot;
+                            <a href="#">Terms &amp; Conditions</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+    <!-- Approve/Reject Modal -->
+    <div class="modal fade" id="approveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="approveModalLabel">Confirm Action</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" title="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>Do you want to approve or reject this request?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn-reject" id="rejectRequestBtn">Reject</button>
+            <button type="button" class="btn-approve" id="approveRequestBtn">Approve</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="js/scripts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+    <script src="js/datatables-simple-demo.js"></script>
+</body>
+</html> 

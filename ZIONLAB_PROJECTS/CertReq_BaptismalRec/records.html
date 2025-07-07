@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Baptismal Records - Admin</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+    <link href="css/styles.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+
+    <style>
+            /* ---------- COLOR PALETTE ---------- */
+            :root{
+                --accent: #A0D3D9;        /* light-cyan highlight               */
+                --bg-light:#F0F2F2;       /* very-light gray page background    */
+                --gold:#A67D03;           /* golden header / card top-border    */
+                --bronze-dark:#8C5C03;    /* sidebar background                 */
+                --bronze-darker:#734002;  /* hover / active sidebar item        */
+            }
+            /* highlight active page in paginator */
+            .datatable-pagination-list-item.active .datatable-pagination-list-item-link {
+                background-color: var(--gold);   /* #A67D03 */
+                border-color:   var(--gold);     /* if you use borders */
+                color: #fff;                     /* white text for good contrast */
+            }
+
+            /* ---------- GLOBAL ---------- */
+            body{font-family:"Segoe UI",sans-serif;background:var(--bg-light);margin:0}
+
+            /* === keep page banner visible while table/body scroll === */
+            .sticky-title {
+                position: sticky;          /* <— magic */
+                top: 0;                    /* stick to very top of viewport */
+                z-index: 1030;             /* above cards/table */
+                background: #8C5C03;       /* same color as you already use */
+                color: #fff;               /* legible on the bronze bar */
+                padding: 10px;
+                border-radius: 6px;
+                margin-bottom: 0;          /* avoid jumpy spacing */
+            }
+
+            /* ---------- SIDEBAR ---------- */
+            .sb-sidenav {
+                background: linear-gradient(180deg, #B88A0A 0%, #966504 100%);
+                color: #F2F4F4;
+                font-family: 'Montserrat', Arial, sans-serif;
+                box-shadow: 2px 0 16px rgba(107,63,0,0.06);
+                border-top-right-radius: 24px;
+                border-bottom-right-radius: 24px;
+                min-height: 100vh;
+                animation: fadeInSidebar 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+                overflow-y: unset;
+                padding-top: 0 !important;
+                margin-top: 0 !important;
+                border-right: 2px solid #B88A0A;
+            }
+            @keyframes fadeInSidebar {
+                from { opacity: 0; transform: translateX(-40px); }
+                to { opacity: 1; transform: translateX(0); }
+            }
+            .sb-sidenav .church-logo-bg {
+                background: transparent;
+                position: relative;
+                width: 100%;
+                height: auto;
+                display: flex;
+                align-items: flex-start;
+                justify-content: center;
+                margin-bottom: 0;
+                overflow: visible;
+                padding-top: 0 !important;
+                margin-top: 0 !important;
+            }
+            .sb-sidenav .church-logo {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: flex-start;
+                gap: 16px;
+                margin: 0 18px;
+                width: calc(100% - 36px);
+                padding-top: 0 !important;
+                padding-bottom: 10px;
+                margin-top: 20px !important;
+            }
+            .sb-sidenav .church-logo img {
+                width: 70px;
+                height: 70px;
+                object-fit: cover;
+                border-radius: 50%;
+                border: 3px solid #A9D8DE;
+                background: #fff;
+                box-shadow: 0 2px 8px rgba(107,63,0,0.10);
+                margin-bottom: 0;
+                margin-left: 0;
+            }
+            .sb-sidenav .church-logo img:hover {
+                box-shadow: 0 8px 32px rgba(185,136,4,0.18);
+                border-color: #C9A227;
+            }
+            .sb-sidenav .church-logo .church-name {
+                margin-top: 0;
+                text-align: center;
+                font-size: 11px;
+                color: #f9f6f0;
+                font-family: 'Montserrat', Arial, sans-serif;
+                font-weight: 700;
+            }
+            .sb-sidenav-menu .nav {
+                margin-top: 18px;
+            }
+            .sb-sidenav .sb-sidenav-menu .nav-link {
+                color: #6B3F00;
+                background: transparent;
+                border-radius: 10px;
+                margin: 4px 0;
+                padding: 10px 16px;
+                font-size: 0.90rem;
+                font-weight: 700;
+                font-family: 'Montserrat', Arial, sans-serif;
+                transition: background 0.2s, color 0.2s, box-shadow 0.2s, border 0.2s;
+                border-left: 4px solid transparent;
+            }
+            .sb-sidenav .sb-sidenav-menu .nav-link.active {
+                background: linear-gradient(90deg, #A9D8DE 0%, #B88A0A 100%);
+                color: #6B3F00;
+                border-left: 4px solid #966504;
+                box-shadow: 0 2px 8px rgba(185,136,4,0.08);
+            }
+            .sb-sidenav .sb-sidenav-menu .nav-link:hover {
+                background: #F2F4F4;
+                color: #B88A0A;
+                border-left: 4px solid #A9D8DE;
+                box-shadow: 0 2px 8px rgba(169,216,222,0.10);
+            }
+            .sb-sidenav-menu hr {
+                border: none;
+                border-top: 1.5px solid #ede9dc;
+                margin: 18px 18px 10px 18px;
+            }
+            .btn-logout {
+                background: #6B3F00;
+                color: #fff;
+                font-family: 'Montserrat', Arial, sans-serif;
+                font-weight: 700;
+                border-radius: 8px;
+                letter-spacing: 1px;
+                padding: 10px 0;
+                margin-top: 0;
+                border: none;
+                box-shadow: 0 2px 8px rgba(107,63,0,0.08);
+                transition: background 0.2s, color 0.2s;
+                font-size: 1rem;
+                display: block;
+                text-decoration: none;
+            }
+            .btn-logout:hover, .btn-logout:focus {
+                background: #B88A0A;
+                color: #6B3F00;
+                text-decoration: none;
+            }
+
+            /* ---------- MAIN ---------- */
+            .main-content{margin-left:250px;padding:10px}
+            .card{
+                background:#fff;border-top:4px solid var(--gold);
+                box-shadow:0 0 10px rgba(0,0,0,.1)
+            }
+            .table-responsive{max-height:500px}
+
+            /* table header colour */
+            .table thead{background:var(--gold);color:#fff}
+                /* limit the table's height and allow vertical scrolling */
+            .table-scroll {
+                max-height: 580px;   /* adjust to whatever fits your layout */
+                overflow-y: auto;    /* enables vertical scrollbar */
+            }
+
+            /* keep header cells visible when the body scrolls (optional) */
+            .table-scroll thead th {
+                position: sticky;
+                top: 0;
+                z-index: 2;
+                background: var(--gold);   /* or your original header colour */
+            }
+                        /* white header text + sort icons */
+            th[data-sortable="true"]{
+                position:relative;
+                cursor:pointer;
+                padding-right:26px;   /* room for the icon */
+                color:#fff;           /* header text white */
+            }
+            th[data-sortable="true"]::after{
+                content:"\f0dc";                   /* fa-sort (⇅) */
+                font-family:"Font Awesome 5 Free";
+                font-weight:900;
+                font-size:0.8rem;
+                position:absolute;
+                right:6px;
+                top:50%;
+                transform:translateY(-50%);
+                color:#fff;                       /* icon white */
+            }
+            /* ▲ when ascending */
+            th.asc::after { content:"\f0de"; }     /* fa-sort-up */
+            /* ▼ when descending */
+            th.desc::after{ content:"\f0dd"; }     /* fa-sort-down */
+
+
+            /* ---------- PAGINATION ---------- */
+            .pagination .page-link{color:var(--bronze-dark)}
+            .pagination .page-item.active .page-link{
+                background:var(--accent);border-color:var(--accent);color:#000
+            }
+
+            /* ---------- FOOTER & LOGOUT ---------- */
+            .logout{position:absolute;bottom:20px;left:20px;color:#fff}
+            .footer{text-align:center;font-size:.95rem;margin-top:10px;color:#555}
+
+            /* ---------- ENHANCED SEARCH & TABLE UI ---------- */
+            .search-card {
+                background: #fff;
+                border-radius: 12px;
+                box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+                padding: 24px 24px 24px 24px;
+                margin-bottom: 24px;
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .search-input-group {
+                position: relative;
+                display: flex;
+                align-items: center;
+                width: 100%;
+            }
+            .search-input {
+                width: 100%;
+                padding: 14px 48px 14px 18px;
+                border: 2px solid #e0e0e0;
+                border-radius: 8px;
+                font-size: 1.1rem;
+                background: #f8fafb;
+                transition: border-color 0.3s, box-shadow 0.3s;
+            }
+            .search-input:focus {
+                outline: none;
+                border-color: var(--accent);
+                box-shadow: 0 0 0 3px rgba(160, 211, 217, 0.12);
+                background: #fff;
+            }
+            .search-icon {
+                position: absolute;
+                right: 18px;
+                color: #a0a0a0;
+                font-size: 1.3rem;
+                pointer-events: none;
+            }
+            .results-counter {
+                margin-top: 10px;
+                color: #888;
+                font-size: 0.97rem;
+                text-align: left;
+            }
+            .datatable-wrapper {
+                background: #fff;
+                border-radius: 12px;
+                box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+                padding: 18px 18px 0 18px;
+            }
+            .datatable-table {
+                border-radius: 8px;
+                overflow: hidden;
+            }
+            .datatable-table thead th {
+                background: var(--gold) !important;
+                color: #fff !important;
+                border: none;
+                padding: 14px 8px;
+                font-weight: 600;
+                text-align: center;
+            }
+            .datatable-table tbody td {
+                padding: 13px 8px;
+                border-bottom: 1px solid #f0f0f0;
+                text-align: start;
+                vertical-align: middle;
+                background: #fff;
+            }
+            .datatable-table tbody tr:hover {
+                background-color: #f7f9fa;
+                transition: background 0.2s;
+            }
+            @media (max-width: 600px) {
+                .search-card, .datatable-wrapper {
+                    padding: 10px 4px 0 4px;
+                }
+                .search-input {
+                    font-size: 1rem;
+                    padding: 12px 40px 12px 12px;
+                }
+            }
+            .datatable-top {
+                display: block;
+                padding: 15px 20px 10px 20px;
+                background: #f8f9fa;
+                border-radius: 8px 8px 0 0;
+            }
+            .datatable-dropdown {
+                margin-bottom: 10px;
+                
+            }
+            .search-input-group {
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                margin-bottom: 10px;
+                min-width: 180px;
+                max-width: 320px;
+                margin-left: auto;
+            }
+            .search-input {
+                width: 100%;
+                padding: 7px 36px 7px 12px;
+                border: 1.5px solid #e0e0e0;
+                border-radius: 6px;
+                font-size: 1rem;
+                background: #fff;
+                transition: border-color 0.2s;
+            }
+            .search-input:focus {
+                outline: none;
+                border-color: var(--gold);
+                background: #fff;
+            }
+            .search-icon {
+                position: absolute;
+                right: 12px;
+                color: #b0a16b;
+                font-size: 1.1rem;
+                pointer-events: none;
+            }
+            .datatable-bottom {
+                display: block;
+                padding: 15px 20px;
+                background: #f8f9fa;
+                border-radius: 0 0 8px 8px;
+            }
+            .datatable-info {
+                margin-bottom: 8px;
+                display: block;
+            }
+            .datatable-pagination {
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+            }
+            @media (max-width: 600px) {
+                .datatable-top, .datatable-bottom {
+                    padding: 10px 4px;
+                }
+                .search-input-group {
+                    max-width: 100%;
+                    min-width: 0;
+                }
+            }
+
+            /* View button color and hover */
+            .btn-view {
+                background: #8C5C03;
+                color: #fff;
+                border: none;
+                padding: 6px 16px;
+                border-radius: 4px;
+                font-size: 0.95rem;
+                font-weight: 500;
+                transition: background 0.2s, box-shadow 0.2s;
+                box-shadow: 0 2px 6px rgba(25, 118, 210, 0.08);
+            }
+            .btn-view:hover, .btn-view:focus {
+                background: #A67D03;
+                color: #fff;
+                box-shadow: 0 4px 12px rgba(25, 118, 210, 0.15);
+            }
+
+            /* Modal styles (Bootstrap modal will be used) */
+            .modal.fade .modal-dialog {
+                transition: transform 0.3s ease-out;
+                transform: translateY(-30px);
+            }
+            .modal.show .modal-dialog {
+                transform: none;
+            }
+
+            .table, .datatable-table {
+                font-size: 0.78rem !important;
+            }
+            .table th, .datatable-table th {
+                font-size: 0.80rem !important;
+                padding: 6px 4px !important;
+            }
+            .table td, .datatable-table td {
+                font-size: 0.75rem !important;
+                padding: 5px 4px !important;
+            }
+            .table .btn, .datatable-table .btn {
+                font-size: 0.68rem !important;
+                padding: 2px 10px !important;
+                border-radius: 4px !important;
+                font-family: 'Montserrat', Arial, sans-serif !important;
+            }
+            .sb-sidenav, .sb-sidenav * {
+                font-family: 'Montserrat', Arial, sans-serif !important;
+            }
+    </style>
+</head>
+
+<body class="sb-nav-fixed">
+    <div id="layoutSidenav" style="display: flex; min-height: 100vh;">
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                <div class="church-logo-bg">
+                    <div class="church-logo">
+                        <img src="logo.png" alt="Our Lady of Light Parish Logo">
+                        <div class="church-name">Our Lady of Light <br>Parish- Loon</div>
+                    </div>
+                </div>
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <hr style="border: none; border-top: 1.5px solid #ede9dc; margin: 18px 18px 10px 18px;">
+                        <a class="nav-link" href="certificates_request.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
+                            Certificates Request
+                        </a>
+                        <a class="nav-link active" href="records.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-book"></i></div>
+                            Baptismal Records
+                        </a>
+                    </div>
+                </div>
+                <div style="flex-grow:1;"></div>
+                <hr style="border: none; border-top: 1.5px solid #423405; margin: 18px 18px 10px 18px;">
+                <div style="padding: 0 18px 18px 18px; text-align: center;">
+                    <a href="#" class="btn btn-logout" style="width: 100%;">Logout</a>
+                </div>
+            </nav>
+        </div>
+        <div id="layoutSidenav_content" style="flex: 1 1 0%; min-width: 0;">
+            <main class="main-content" style="margin-left: 0; padding: 8px 24px 24px 24px;">
+                <h3 class="sticky-title">
+                    BAPTISMAL RECORDS
+                </h3>
+
+                <div class="card p-3 mt-2 search-card">
+                    <div class="d-flex justify-content-between align-items-center ">
+                        <div>
+                        <label>
+                            <select id="entriesPerPage" class="custom-select custom-select-sm w-auto mx-1">
+                                <option value="10" selected>10</option>
+                                <option value="20">20</option>
+                                <option value="30">30</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                                <option value="all">All</option>
+                            </select>entries per page
+                        </label>
+                        </div>
+
+                        <div class="search-box flex-grow-1 ml-3">
+                            <div class="search-input-group position-relative">
+                            <input id="searchInput" type="text"
+                                class="form-control form-control-sm pr-4"
+                                placeholder="Type to search…"
+                                autocomplete="off">
+                            <i class="fas fa-search position-absolute"style="right:10px;top:50%;transform:translateY(-50%);color:#888;"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-scroll">
+                    <table class="datatable-table w-100" id="baptismalTable">
+                        <thead class="text-center">
+                            <tr>
+                                <th data-sortable="true">ID</th>
+                                <th data-sortable="true">Name of the Child</th>
+                                <th data-sortable="true">Father's Name</th>
+                                <th data-sortable="true">Mother's Name</th>
+                                <th data-sortable="true">Date of Baptism</th>
+                                <th data-sortable="true">Place of Baptism</th>
+                                <th data-sortable="true">Certificate Number</th>
+                                <th data-sortable="false">Action</th>
+                            </tr>
+                        </thead>        
+                        <tbody>
+                                <!-- 1 -->
+                                <tr>
+                                    <td>1</td>
+                                    <td>Juan Dela Cruz</td>
+                                    <td>Jose Dela Cruz</td>
+                                    <td>Maria Lopez</td>
+                                    <td>02/15/2021</td>
+                                    <td>St. John Church</td>
+                                    <td>CERT-0001</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 2 -->
+                                <tr>
+                                    <td>2</td>
+                                    <td>Cardo Dalisay</td>
+                                    <td>Jose Dela Cruz</td>
+                                    <td>Maria Lopez</td>
+                                    <td>02/15/2021</td>
+                                    <td>St. John Church</td>
+                                    <td>CERT-0002</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 3 -->
+                                <tr>
+                                    <td>3</td>
+                                    <td>Lalisa Manoban</td>
+                                    <td>Jose Dela Cruz</td>
+                                    <td>Maria Lopez</td>
+                                    <td>02/15/2021</td>
+                                    <td>St. John Church</td>
+                                    <td>CERT-0003</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 4 -->
+                                <tr>
+                                    <td>4</td>
+                                    <td>Jennie Kim</td>
+                                    <td>Jose Dela Cruz</td>
+                                    <td>Maria Lopez</td>
+                                    <td>02/15/2021</td>
+                                    <td>St. John Church</td>
+                                    <td>CERT-0004</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 5 -->
+                                <tr>
+                                    <td>5</td>
+                                    <td>Maria Clara</td>
+                                    <td>Jose Dela Cruz</td>
+                                    <td>Maria Lopez</td>
+                                    <td>02/15/2021</td>
+                                    <td>St. John Church</td>
+                                    <td>CERT-0005</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 6 -->
+                                <tr>
+                                    <td>6</td>
+                                    <td>Justine Abella</td>
+                                    <td>Jose Dela Cruz</td>
+                                    <td>Maria Lopez</td>
+                                    <td>02/15/2021</td>
+                                    <td>St. John Church</td>
+                                    <td>CERT-0006</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 7 -->
+                                <tr>
+                                    <td>7</td>
+                                    <td>Matt Dajao</td>
+                                    <td>Jose Dela Cruz</td>
+                                    <td>Maria Lopez</td>
+                                    <td>02/15/2021</td>
+                                    <td>St. John Church</td>
+                                    <td>CERT-0007</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 8 -->
+                                <tr>
+                                    <td>8</td>
+                                    <td>Sophia Reyes</td>
+                                    <td>Mark Reyes</td>
+                                    <td>Anna Reyes</td>
+                                    <td>08/20/2022</td>
+                                    <td>San Pedro Parish</td>
+                                    <td>CERT-0008</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 9 -->
+                                <tr>
+                                    <td>9</td>
+                                    <td>Daniel Garcia</td>
+                                    <td>Juan Garcia</td>
+                                    <td>Rosa Garcia</td>
+                                    <td>03/30/2022</td>
+                                    <td>St. Michael Parish</td>
+                                    <td>CERT-0009</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 10 -->
+                                <tr>
+                                    <td>10</td>
+                                    <td>Lucas Santos</td>
+                                    <td>Carlos Santos</td>
+                                    <td>Aileen Santos</td>
+                                    <td>06/18/2022</td>
+                                    <td>Our Lady of Light</td>
+                                    <td>CERT-0010</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 11 -->
+                                <tr>
+                                    <td>11</td>
+                                    <td>Isabella Cruz</td>
+                                    <td>Michael Cruz</td>
+                                    <td>Arlene Cruz</td>
+                                    <td>09/10/2022</td>
+                                    <td>St. John Church</td>
+                                    <td>CERT-0011</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 12 -->
+                                <tr>
+                                    <td>12</td>
+                                    <td>Miguel Ramirez</td>
+                                    <td>Oscar Ramirez</td>
+                                    <td>Angela Ramirez</td>
+                                    <td>10/25/2022</td>
+                                    <td>San Jose Parish</td>
+                                    <td>CERT-0012</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 13 -->
+                                <tr>
+                                    <td>13</td>
+                                    <td>Angela Flores</td>
+                                    <td>Nestor Flores</td>
+                                    <td>Cathy Flores</td>
+                                    <td>12/02/2022</td>
+                                    <td>St. Augustine</td>
+                                    <td>CERT-0013</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 14 -->
+                                <tr>
+                                    <td>14</td>
+                                    <td>Ethan Alvarez</td>
+                                    <td>Gab Alvarez</td>
+                                    <td>Liza Alvarez</td>
+                                    <td>01/14/2023</td>
+                                    <td>Our Lady of Assumption</td>
+                                    <td>CERT-0014</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 15 -->
+                                <tr>
+                                    <td>15</td>
+                                    <td>Chloe Mendoza</td>
+                                    <td>Ramon Mendoza</td>
+                                    <td>Joy Mendoza</td>
+                                    <td>02/05/2023</td>
+                                    <td>St. Nicholas Parish</td>
+                                    <td>CERT-0015</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 16 -->
+                                <tr>
+                                    <td>16</td>
+                                    <td>Gabriel Navarro</td>
+                                    <td>Dan Navarro</td>
+                                    <td>Anna Navarro</td>
+                                    <td>03/12/2023</td>
+                                    <td>St. John Church</td>
+                                    <td>CERT-0016</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 17 -->
+                                <tr>
+                                    <td>17</td>
+                                    <td>Victoria Diaz</td>
+                                    <td>Roberto Diaz</td>
+                                    <td>Daisy Diaz</td>
+                                    <td>04/15/2023</td>
+                                    <td>St. Peter Parish</td>
+                                    <td>CERT-0017</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 18 -->
+                                <tr>
+                                    <td>18</td>
+                                    <td>Noah Fernandez</td>
+                                    <td>Joel Fernandez</td>
+                                    <td>Grace Fernandez</td>
+                                    <td>05/28/2023</td>
+                                    <td>San Antonio de Padua</td>
+                                    <td>CERT-0018</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 19 -->
+                                <tr>
+                                    <td>19</td>
+                                    <td>Olivia Ramos</td>
+                                    <td>Ben Ramos</td>
+                                    <td>Celine Ramos</td>
+                                    <td>06/30/2023</td>
+                                    <td>St. Joseph Cathedral</td>
+                                    <td>CERT-0019</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 20 -->
+                                <tr>
+                                    <td>20</td>
+                                    <td>Sebastian Castillo</td>
+                                    <td>Nico Castillo</td>
+                                    <td>Patricia Castillo</td>
+                                    <td>07/22/2023</td>
+                                    <td>Holy Cross Parish</td>
+                                    <td>CERT-0020</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                
+                                <!-- 21 -->
+                                <tr>
+                                    <td>21</td>
+                                    <td>Angelo Ramirez</td>
+                                    <td>Carlos Ramirez</td>
+                                    <td>Isabel Ramos</td>
+                                    <td>01/12/2024</td>
+                                    <td>San Pablo Parish</td>
+                                    <td>CERT‑1021</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 22 -->
+                                <tr>
+                                    <td>22</td>
+                                    <td>Samantha Cruz</td>
+                                    <td>Mario Cruz</td>
+                                    <td>Elena Diaz</td>
+                                    <td>02/28/2024</td>
+                                    <td>Our Lady of Mercy</td>
+                                    <td>CERT‑1022</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 23 -->
+                                <tr>
+                                    <td>23</td>
+                                    <td>Liam Bautista</td>
+                                    <td>Gabriel Bautista</td>
+                                    <td>Ruth Dominguez</td>
+                                    <td>03/15/2024</td>
+                                    <td>St. Joseph Cathedral</td>
+                                    <td>CERT‑1023</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 24 -->
+                                <tr>
+                                    <td>24</td>
+                                    <td>Sophia Navarro</td>
+                                    <td>Daniel Navarro</td>
+                                    <td>Alicia Flores</td>
+                                    <td>04/07/2024</td>
+                                    <td>Holy Cross Parish</td>
+                                    <td>CERT‑1024</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 25 -->
+                                <tr>
+                                    <td>25</td>
+                                    <td>Matthew Santos</td>
+                                    <td>Jonas Santos</td>
+                                    <td>Grace Velasco</td>
+                                    <td>05/19/2024</td>
+                                    <td>St. Michael the Archangel</td>
+                                    <td>CERT‑1025</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 26 -->
+                                <tr>
+                                    <td>26</td>
+                                    <td>Chloe Gallardo</td>
+                                    <td>Raymond Gallardo</td>
+                                    <td>Katrina Uy</td>
+                                    <td>06/30/2024</td>
+                                    <td>San Pedro Calungsod</td>
+                                    <td>CERT‑1026</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 27 -->
+                                <tr>
+                                    <td>27</td>
+                                    <td>Noah Reyes</td>
+                                    <td>Leonardo Reyes</td>
+                                    <td>Michelle Cruz</td>
+                                    <td>07/14/2024</td>
+                                    <td>St. Augustine Church</td>
+                                    <td>CERT‑1027</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 28 -->
+                                <tr>
+                                    <td>28</td>
+                                    <td>Isabella Vega</td>
+                                    <td>Oscar Vega</td>
+                                    <td>Patricia Mendoza</td>
+                                    <td>08/08/2024</td>
+                                    <td>Our Lady of Fatima</td>
+                                    <td>CERT‑1028</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 29 -->
+                                <tr>
+                                    <td>29</td>
+                                    <td>Gabriel Cruzado</td>
+                                    <td>Rico Cruzado</td>
+                                    <td>Yna Morales</td>
+                                    <td>09/22/2024</td>
+                                    <td>Immaculate Conception</td>
+                                    <td>CERT‑1029</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 30 -->
+                                <tr>
+                                    <td>30</td>
+                                    <td>Mia Alvarez</td>
+                                    <td>Roberto Alvarez</td>
+                                    <td>Helena Torres</td>
+                                    <td>10/05/2024</td>
+                                    <td>St. Peter Parish</td>
+                                    <td>CERT‑1030</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 31 -->
+                                <tr>
+                                    <td>31</td>
+                                    <td>Ethan dela Rosa</td>
+                                    <td>Antonio dela Rosa</td>
+                                    <td>Rose Ramos</td>
+                                    <td>11/11/2024</td>
+                                    <td>San Lorenzo Ruiz</td>
+                                    <td>CERT‑1031</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 32 -->
+                                <tr>
+                                    <td>32</td>
+                                    <td>Ava Castillo</td>
+                                    <td>Victor Castillo</td>
+                                    <td>Belinda Cruz</td>
+                                    <td>12/19/2024</td>
+                                    <td>Our Lady of Remedies</td>
+                                    <td>CERT‑1032</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 33 -->
+                                <tr>
+                                    <td>33</td>
+                                    <td>Nathan Pascual</td>
+                                    <td>Howard Pascual</td>
+                                    <td>Carla Tan</td>
+                                    <td>01/03/2023</td>
+                                    <td>St. Francis of Assisi</td>
+                                    <td>CERT‑1033</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 34 -->
+                                <tr>
+                                    <td>34</td>
+                                    <td>Olivia Mercado</td>
+                                    <td>Enrique Mercado</td>
+                                    <td>Diana Gutierrez</td>
+                                    <td>02/18/2023</td>
+                                    <td>Mary Help of Christians</td>
+                                    <td>CERT‑1034</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 35 -->
+                                <tr>
+                                    <td>35</td>
+                                    <td>Logan Villanueva</td>
+                                    <td>Alexander Villanueva</td>
+                                    <td>Aurora Lim</td>
+                                    <td>03/07/2023</td>
+                                    <td>Sto. Niño Parish</td>
+                                    <td>CERT‑1035</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 36 -->
+                                <tr>
+                                    <td>36</td>
+                                    <td>Hazel Santiago</td>
+                                    <td>Benjamin Santiago</td>
+                                    <td>Grace Bautista</td>
+                                    <td>04/25/2023</td>
+                                    <td>St. John the Baptist</td>
+                                    <td>CERT‑1036</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 37 -->
+                                <tr>
+                                    <td>37</td>
+                                    <td>Daniela Soriano</td>
+                                    <td>Gerardo Soriano</td>
+                                    <td>Maricar Reyes</td>
+                                    <td>05/12/2023</td>
+                                    <td>Christ the King Parish</td>
+                                    <td>CERT‑1037</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 38 -->
+                                <tr>
+                                    <td>38</td>
+                                    <td>Jacob Escobar</td>
+                                    <td>Hector Escobar</td>
+                                    <td>Renee Dionisio</td>
+                                    <td>06/30/2023</td>
+                                    <td>St. Michael Parish</td>
+                                    <td>CERT‑1038</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 39 -->
+                                <tr>
+                                    <td>39</td>
+                                    <td>Camila Rivera</td>
+                                    <td>Julio Rivera</td>
+                                    <td>Leticia Chavez</td>
+                                    <td>07/21/2023</td>
+                                    <td>Our Lady of Peace</td>
+                                    <td>CERT‑1039</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+                                <!-- 40 -->
+                                <tr>
+                                    <td>40</td>
+                                    <td>Lucas Domingo</td>
+                                    <td>Samuel Domingo</td>
+                                    <td>Rosa Fernandez</td>
+                                    <td>08/10/2023</td>
+                                    <td>San Jose Parish</td>
+                                    <td>CERT‑1040</td>
+                                    <td><button class="btn btn-view" type="button">View</button></td>
+                                </tr>
+
+
+                        </tbody>
+                    </table>                   
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <small id="entriesInfo">SHOWING 1 TO 10 OF 20 ENTRIES</small>
+                            <nav>
+                                <ul class="pagination pagination-sm mb-0" id="paginationNav">
+                                    <!-- Pagination will be rendered here -->
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer mt-2">
+                    © Copyright Our Lady of Light Parish Certificate Request System. All rights reserved.
+                </div> 
+            </main>
+        </div>
+    </div>
+
+    <!-- View Details Modal -->
+    <div class="modal fade" id="viewRecordModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title">Baptismal Record Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                <table class="table table-sm mb-0">
+                <tbody id="modalDetailsBody"><!-- rows injected in JS --></tbody>
+                </table>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End of View Details Modal -->
+
+    <script>
+    /* ---------- grab elements ---------- */
+    const table                = document.getElementById('baptismalTable');
+    const thead                = table.querySelector('thead');
+    const tbody                = table.querySelector('tbody');
+    const allRows              = Array.from(tbody.querySelectorAll('tr'));
+    const entriesPerPageSelect = document.getElementById('entriesPerPage');
+    const entriesInfo          = document.getElementById('entriesInfo');
+    const paginationNav        = document.getElementById('paginationNav');
+    const searchInput          = document.getElementById('searchInput');
+
+    /* ---------- state ---------- */
+    let currentPage   = 1;
+    let filteredRows  = [...allRows];
+    let sortColumnIdx = null;   // which column (0‑based)
+    let sortDir       = 'asc';  // 'asc' | 'desc'
+
+    /* ---------- helpers ---------- */
+    const getEntriesPerPage = () =>
+        entriesPerPageSelect.value === 'all'
+            ? filteredRows.length
+            : parseInt(entriesPerPageSelect.value, 10);
+
+    function filterRows() {
+        const term = searchInput.value.toLowerCase().trim();
+        filteredRows = allRows.filter(row =>
+            row.textContent.toLowerCase().includes(term)
+        );
+        currentPage = 1;
+    }
+
+    /* === NEW: sort rows array before we paginate === */
+    function sortRows() {
+        if (sortColumnIdx === null) return;
+        filteredRows.sort((a, b) => {
+            const aText = a.children[sortColumnIdx].textContent.trim().toLowerCase();
+            const bText = b.children[sortColumnIdx].textContent.trim().toLowerCase();
+            const numA  = parseFloat(aText);  // numeric compare if both numbers
+            const numB  = parseFloat(bText);
+            let cmp;
+            if (!isNaN(numA) && !isNaN(numB)) {
+                cmp = numA - numB;
+            } else {
+                cmp = aText.localeCompare(bText);
+            }
+            return sortDir === 'asc' ? cmp : -cmp;
+        });
+    }
+
+    function renderTable() {
+        sortRows();                                  /* <— NEW */
+        const perPage = getEntriesPerPage();
+        const total   = filteredRows.length;
+        const totalPages = perPage === total ? 1 : Math.ceil(total / perPage);
+
+        currentPage = Math.max(1, Math.min(currentPage, totalPages));
+        const startIdx = perPage === total ? 0 : (currentPage - 1) * perPage;
+        const endIdx   = perPage === total ? total : Math.min(startIdx + perPage, total);
+
+        /* hide/show rows */
+        allRows.forEach(row => (row.style.display = 'none'));
+        filteredRows.forEach((row, i) =>
+            (row.style.display = i >= startIdx && i < endIdx ? '' : 'none')
+        );
+
+        entriesInfo.textContent =
+            total === 0
+                ? 'NO ENTRIES FOUND'
+                : `SHOWING ${startIdx + 1} TO ${endIdx} OF ${total} ENTRIES`;
+
+        renderPagination(totalPages);
+        attachViewButtonListeners();
+    }
+
+    function renderPagination(totalPages) {
+        paginationNav.innerHTML = '';
+        if (totalPages <= 1) return;
+
+        /* prev */
+        const prev = document.createElement('li');
+        prev.className = 'page-item' + (currentPage === 1 ? ' disabled' : '');
+        prev.innerHTML = `<a class="page-link" href="#">«</a>`;
+        prev.onclick = e => { e.preventDefault(); currentPage--; renderTable(); };
+        paginationNav.appendChild(prev);
+
+        /* pages */
+        for (let i = 1; i <= totalPages; i++) {
+            const li = document.createElement('li');
+            li.className = 'page-item' + (i === currentPage ? ' active' : '');
+            li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+            li.onclick = e => { e.preventDefault(); currentPage = i; renderTable(); };
+            paginationNav.appendChild(li);
+        }
+
+        /* next */
+        const next = document.createElement('li');
+        next.className = 'page-item' + (currentPage === totalPages ? ' disabled' : '');
+        next.innerHTML = `<a class="page-link" href="#">»</a>`;
+        next.onclick = e => { e.preventDefault(); currentPage++; renderTable(); };
+        paginationNav.appendChild(next);
+    }
+
+    /* ---------- View‑modal wiring (unchanged) ---------- */
+    function attachViewButtonListeners() {
+        document.querySelectorAll('.btn-view').forEach(btn => {
+            btn.onclick = () => {
+                const cells = btn.closest('tr').children;
+                const details = `
+                    <table class="table table-bordered mb-0">
+                        <tr><th>ID</th><td>${cells[0].textContent}</td></tr>
+                        <tr><th>Name of the Child</th><td>${cells[1].textContent}</td></tr>
+                        <tr><th>Father's Name</th><td>${cells[2].textContent}</td></tr>
+                        <tr><th>Mother's Name</th><td>${cells[3].textContent}</td></tr>
+                        <tr><th>Date of Baptism</th><td>${cells[4].textContent}</td></tr>
+                        <tr><th>Place of Baptism</th><td>${cells[5].textContent}</td></tr>
+                        <tr><th>Certificate Number</th><td>${cells[6].textContent}</td></tr>
+                    </table>`;
+                document.getElementById('modalDetailsBody').innerHTML = details;
+                new bootstrap.Modal('#viewRecordModal').show();
+            };
+        });
+    }
+
+    /* ---------- NEW: click handler for sorting ---------- */
+    thead.querySelectorAll('th[data-sortable="true"]').forEach((th, idx) => {
+        th.addEventListener('click', () => {
+            /* toggle direction or pick new column */
+            if (sortColumnIdx === idx) {
+                sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortColumnIdx = idx;
+                sortDir       = 'asc';
+            }
+
+            /* update arrow classes */
+            thead.querySelectorAll('th').forEach(h => h.classList.remove('asc', 'desc'));
+            th.classList.add(sortDir);
+
+            renderTable();
+        });
+    });
+
+    /* ---------- event listeners ---------- */
+    entriesPerPageSelect.addEventListener('change', () => renderTable());
+    searchInput.addEventListener('input', () => { filterRows(); renderTable(); });
+
+    /* ---------- initial render ---------- */
+    document.addEventListener('DOMContentLoaded', () => {
+        filterRows();
+        renderTable();
+    });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/scripts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+
+</body>
+</html>
