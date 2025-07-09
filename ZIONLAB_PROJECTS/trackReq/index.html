@@ -206,7 +206,7 @@
               <h5>Our Lady of Light</h5>
               <h6>Loon, Bohol</h6>
             </div>
-            <div class="nav flex-column mt-4">
+            <div class="nav flex-column mt-3">
               <a class="nav-link active small-link" href="#">
                 <i class="bi bi-table me-2"></i> Track Request
               </a>
@@ -653,12 +653,16 @@
 
       // Pagination logic
       function paginateTable() {
-        const perPage = parseInt(document.getElementById("perPageSelect").value);
-        const rows = Array.from(document.querySelectorAll(".custom-white-table tbody tr"));
+        const perPage = parseInt(
+          document.getElementById("perPageSelect").value
+        );
+        const rows = Array.from(
+          document.querySelectorAll(".custom-white-table tbody tr")
+        );
         // Always reset all rows to visible before paginating
-        rows.forEach(row => row.style.display = "");
+        rows.forEach((row) => (row.style.display = ""));
         // Only consider rows that match the current search filter
-        let visibleRows = rows.filter(row => row.style.display !== "none");
+        let visibleRows = rows.filter((row) => row.style.display !== "none");
         visibleRows.forEach((row, idx) => {
           if (idx < perPage) {
             row.style.display = "";
@@ -667,7 +671,7 @@
           }
         });
         // Update table footer info
-        const footer = document.querySelector('.table-footer-controls > div');
+        const footer = document.querySelector(".table-footer-controls > div");
         if (footer) {
           const total = visibleRows.length;
           const showing = Math.min(perPage, total);
@@ -675,12 +679,14 @@
         }
       }
 
-      document.getElementById("perPageSelect").addEventListener("change", function() {
-        paginateTable();
-      });
+      document
+        .getElementById("perPageSelect")
+        .addEventListener("change", function () {
+          paginateTable();
+        });
 
       // Initial pagination on page load
-      window.addEventListener('DOMContentLoaded', function() {
+      window.addEventListener("DOMContentLoaded", function () {
         paginateTable();
       });
     </script>
